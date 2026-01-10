@@ -126,6 +126,36 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.08);
         }
 
+        .tab-btn-small {
+            padding: 10px 16px;
+            font-size: 13px;
+            flex: 0 0 auto;
+        }
+
+        .action-btn {
+            padding: 8px 14px;
+            font-size: 13px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 0 0 auto;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
         .tab-content {
             display: none;
         }
@@ -152,16 +182,86 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
+        .query-input-wrapper {
+            position: relative;
+        }
+
+        .voice-input-btn {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #64748b;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .voice-input-btn:hover {
+            background: #f8fafc;
+            border-color: #3b82f6;
+            color: #3b82f6;
+            transform: scale(1.05);
+        }
+
+        .voice-input-btn.listening {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: white;
+            animation: pulse-mic 1.5s infinite;
+        }
+
+        @keyframes pulse-mic {
+            0% { 
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+            50% { 
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+            100% { 
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+
+        .voice-status {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 8px;
+            text-align: right;
+            min-height: 20px;
+        }
+
+        .voice-status.active {
+            color: #ef4444;
+            font-weight: 500;
+        }
+
         .voice-section {
             text-align: center;
+        }
+
+        .voice-controls {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 32px;
         }
 
         .record-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
-            padding: 32px;
+            gap: 12px;
         }
 
         .record-btn {
@@ -246,11 +346,11 @@
         .file-upload {
             border: 2px dashed #cbd5e1;
             border-radius: 12px;
-            padding: 32px;
+            padding: 24px 32px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
-            margin-top: 24px;
+            min-width: 200px;
         }
 
         .file-upload:hover {
@@ -511,21 +611,24 @@
 
         <div class="card">
             <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('text')">
-                    <span>💬</span> Text Question
+                <button class="tab-btn active" onclick="switchTab('query')">
+                    <span>💬</span> Query
                 </button>
-                <button class="tab-btn" onclick="switchTab('voice')">
-                    <span>🎤</span> Voice Question
+                <button class="tab-btn" onclick="switchTab('voiceQuery')">
+                    <span>🎙️</span> Voice Query
                 </button>
-                <button class="tab-btn" onclick="startNewConversation()" style="margin-left: auto; background: #dbeafe; color: #1e40af;">
-                    <span>✨</span> New Session
+                <button class="tab-btn" onclick="switchTab('voiceFull')">
+                    <span>🎤</span> Voice Full
                 </button>
-                <button class="tab-btn" onclick="clearConversation()" style="background: #fee2e2; color: #dc2626;">
-                    <span>🗑️</span> Clear History
+                <button class="action-btn" onclick="startNewConversation()" style="margin-left: auto; background: #dbeafe; color: #1e40af;">
+                    <span>✨</span> New
+                </button>
+                <button class="action-btn" onclick="clearConversation()" style="background: #fee2e2; color: #dc2626;">
+                    <span>🗑️</span> Clear
                 </button>
             </div>
 
-            <div id="textTab" class="tab-content active">
+            <div id="queryTab" class="tab-content active">
                 <textarea 
                     id="textInput" 
                     class="text-input" 
@@ -534,11 +637,48 @@
                 <button class="btn-primary" onclick="submitText()">Submit Question</button>
             </div>
 
-            <div id="voiceTab" class="tab-content">
+            <div id="voiceQueryTab" class="tab-content">
                 <div class="voice-section">
-                    <div class="record-container">
-                        <button class="record-btn" id="recordBtn" onclick="toggleRecording()">🎤</button>
-                        <p class="record-status" id="recordStatus">Ready to record</p>
+                    <div class="voice-controls">
+                        <div class="record-container">
+                            <button class="record-btn" id="voiceQueryRecordBtn" onclick="toggleVoiceQueryRecording()">🎤</button>
+                            <p class="record-status" id="voiceQueryStatus">Click to record your question</p>
+                        </div>
+
+                        <div class="file-upload" onclick="document.getElementById('voiceQueryAudioFile').click()">
+                            <div class="file-upload-icon">📁</div>
+                            <p style="font-weight: 600; color: #1e293b; margin-bottom: 4px;">Upload Audio File</p>
+                            <p style="font-size: 13px; color: #64748b;">WAV, MP3, WEBM, M4A supported</p>
+                            <input type="file" id="voiceQueryAudioFile" accept="audio/*" onchange="handleVoiceQueryAudioUpload()">
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>How to use:</strong>
+                        <ul>
+                            <li>Click the microphone to start recording</li>
+                            <li>Speak your question clearly</li>
+                            <li>Click again to stop and get text response</li>
+                            <li>Or upload a pre-recorded audio file</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div id="voiceFullTab" class="tab-content">
+                <div class="voice-section">
+                    <div class="voice-controls">
+                        <div class="record-container">
+                            <button class="record-btn" id="recordBtn" onclick="toggleRecording()">🎤</button>
+                            <p class="record-status" id="recordStatus">Ready to record</p>
+                        </div>
+
+                        <div class="file-upload" onclick="document.getElementById('audioFile').click()">
+                            <div class="file-upload-icon">📁</div>
+                            <p style="font-weight: 600; color: #1e293b; margin-bottom: 4px;">Upload Audio File</p>
+                            <p style="font-size: 13px; color: #64748b;">WAV, MP3, WEBM, M4A supported</p>
+                            <input type="file" id="audioFile" accept="audio/*" onchange="handleAudioUpload()">
+                        </div>
                     </div>
 
                     <div class="info-box">
@@ -547,15 +687,9 @@
                             <li>Click the microphone button to start</li>
                             <li>Allow microphone access when prompted</li>
                             <li>Speak your question clearly</li>
-                            <li>Click again to stop and submit</li>
+                            <li>Click again to stop and get audio response</li>
+                            <li>Or upload a pre-recorded audio file</li>
                         </ul>
-                    </div>
-
-                    <div class="file-upload" onclick="document.getElementById('audioFile').click()">
-                        <div class="file-upload-icon">📁</div>
-                        <p style="font-weight: 600; color: #1e293b; margin-bottom: 4px;">Upload Audio File</p>
-                        <p style="font-size: 13px; color: #64748b;">WAV, MP3, WEBM, M4A supported</p>
-                        <input type="file" id="audioFile" accept="audio/*" onchange="handleAudioUpload()">
                     </div>
                 </div>
             </div>
@@ -603,19 +737,32 @@
         }
 
         function switchTab(tab) {
-            const textTab = document.getElementById('textTab');
-            const voiceTab = document.getElementById('voiceTab');
+            const queryTab = document.getElementById('queryTab');
+            const voiceQueryTab = document.getElementById('voiceQueryTab');
+            const voiceFullTab = document.getElementById('voiceFullTab');
             const buttons = document.querySelectorAll('.tab-btn');
 
-            buttons.forEach(btn => btn.classList.remove('active'));
+            // Remove active from all buttons except the special ones (New Session, Clear History)
+            buttons.forEach(btn => {
+                if (!btn.onclick.toString().includes('startNewConversation') && 
+                    !btn.onclick.toString().includes('clearConversation')) {
+                    btn.classList.remove('active');
+                }
+            });
             event.target.closest('.tab-btn').classList.add('active');
 
-            if (tab === 'text') {
-                textTab.classList.add('active');
-                voiceTab.classList.remove('active');
-            } else {
-                textTab.classList.remove('active');
-                voiceTab.classList.add('active');
+            // Hide all tabs
+            queryTab.classList.remove('active');
+            voiceQueryTab.classList.remove('active');
+            voiceFullTab.classList.remove('active');
+
+            // Show the selected tab
+            if (tab === 'query') {
+                queryTab.classList.add('active');
+            } else if (tab === 'voiceQuery') {
+                voiceQueryTab.classList.add('active');
+            } else if (tab === 'voiceFull') {
+                voiceFullTab.classList.add('active');
             }
         }
 
@@ -657,6 +804,215 @@
                 return;
             }
 
+            processQuery(question);
+        }
+
+        // Voice Query tab recording
+        let isVoiceQueryRecording = false;
+        let voiceQueryMediaRecorder = null;
+        let voiceQueryAudioChunks = [];
+        let voiceQueryRecordingTimer = null;
+        let voiceQueryRecordingStartTime = 0;
+
+        async function toggleVoiceQueryRecording() {
+            if (!isVoiceQueryRecording) {
+                startVoiceQueryRecording();
+            } else {
+                stopVoiceQueryRecording();
+            }
+        }
+
+        async function startVoiceQueryRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        sampleRate: 16000
+                    } 
+                });
+                
+                const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') 
+                    ? 'audio/webm;codecs=opus' 
+                    : 'audio/webm';
+                
+                voiceQueryMediaRecorder = new MediaRecorder(stream, { mimeType });
+                voiceQueryAudioChunks = [];
+
+                voiceQueryMediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        voiceQueryAudioChunks.push(event.data);
+                    }
+                };
+
+                voiceQueryMediaRecorder.onstop = async () => {
+                    if (voiceQueryRecordingTimer) {
+                        clearInterval(voiceQueryRecordingTimer);
+                        voiceQueryRecordingTimer = null;
+                    }
+                    
+                    const audioBlob = new Blob(voiceQueryAudioChunks, { type: mimeType });
+                    await sendVoiceQueryAudio(audioBlob);
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                voiceQueryMediaRecorder.start(1000);
+                isVoiceQueryRecording = true;
+                voiceQueryRecordingStartTime = Date.now();
+
+                document.getElementById('voiceQueryRecordBtn').classList.add('recording');
+                document.getElementById('voiceQueryStatus').textContent = '🔴 Recording... 0:00';
+                document.getElementById('voiceQueryStatus').classList.add('recording');
+                
+                voiceQueryRecordingTimer = setInterval(() => {
+                    const elapsed = Math.floor((Date.now() - voiceQueryRecordingStartTime) / 1000);
+                    const minutes = Math.floor(elapsed / 60);
+                    const seconds = elapsed % 60;
+                    const timeStr = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    document.getElementById('voiceQueryStatus').textContent = `🔴 Recording... ${timeStr}`;
+                }, 1000);
+
+            } catch (error) {
+                showToast('Microphone access denied. Please check your browser settings.', 'error');
+            }
+        }
+
+        function stopVoiceQueryRecording() {
+            if (voiceQueryMediaRecorder && isVoiceQueryRecording) {
+                isVoiceQueryRecording = false;
+                
+                if (voiceQueryMediaRecorder.state !== 'inactive') {
+                    voiceQueryMediaRecorder.stop();
+                }
+
+                document.getElementById('voiceQueryRecordBtn').classList.remove('recording');
+                document.getElementById('voiceQueryStatus').textContent = 'Processing your audio...';
+                document.getElementById('voiceQueryStatus').classList.remove('recording');
+            }
+        }
+
+        async function handleVoiceQueryAudioUpload() {
+            const file = document.getElementById('voiceQueryAudioFile').files[0];
+            if (!file) return;
+            await sendVoiceQueryAudio(file);
+        }
+
+        async function sendVoiceQueryAudio(audioBlob) {
+            showLoading();
+            hideResponse();
+
+            const formData = new FormData();
+            const fileName = audioBlob.type.includes('webm') ? 'recording.webm' : 'recording.wav';
+            formData.append('audio', audioBlob, fileName);
+
+            try {
+                // Build URL with session_id parameter
+                const url = new URL(`${API_URL}/voice-query`);
+                if (sessionId) {
+                    url.searchParams.append('session_id', sessionId);
+                }
+
+                const response = await fetch(url.toString(), {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    let errorMessage = 'Failed to process voice query';
+                    try {
+                        const errorData = await response.json();
+                        errorMessage = errorData.detail || errorMessage;
+                    } catch (e) {
+                        const errorText = await response.text();
+                        errorMessage = errorText || errorMessage;
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                // Show response section with placeholders
+                document.getElementById('questionText').textContent = 'Processing your voice...';
+                document.getElementById('answerText').innerHTML = '';
+                document.getElementById('responseSection').classList.add('active');
+                
+                const answerBox = document.querySelector('.answer-box');
+                answerBox.classList.add('streaming');
+
+                // Handle SSE streaming response
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+                let fullQuestion = '';
+                let fullAnswer = '';
+
+                console.log('Starting to read voice query SSE stream...');
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) {
+                        console.log('Voice query stream complete');
+                        break;
+                    }
+
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n\n');
+                    buffer = lines.pop();
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            try {
+                                const data = JSON.parse(line.slice(6));
+                                console.log('Voice query received:', data.type, data);
+                                
+                                if (data.type === 'session_id') {
+                                    sessionId = data.session_id;
+                                    sessionStorage.setItem('sessionId', sessionId);
+                                } else if (data.type === 'question') {
+                                    fullQuestion = data.question;
+                                    document.getElementById('questionText').textContent = fullQuestion;
+                                } else if (data.type === 'token') {
+                                    fullAnswer += data.token;
+                                    document.getElementById('answerText').innerHTML = formatAnswer(fullAnswer);
+                                } else if (data.type === 'done') {
+                                    answerBox.classList.remove('streaming');
+                                    hideLoading();
+                                    
+                                    // Get TTS for the answer
+                                    if (fullAnswer) {
+                                        getTTS(fullAnswer);
+                                    }
+                                    
+                                    document.getElementById('voiceQueryStatus').textContent = '✓ Complete';
+                                    document.getElementById('voiceQueryStatus').classList.remove('recording');
+                                    
+                                    setTimeout(() => {
+                                        document.getElementById('voiceQueryStatus').textContent = 'Click to record your question';
+                                    }, 3000);
+                                } else if (data.type === 'error') {
+                                    throw new Error(data.error || 'Streaming error');
+                                }
+                            } catch (parseError) {
+                                console.error('Failed to parse voice query SSE data:', parseError, line);
+                            }
+                        }
+                    }
+                }
+
+            } catch (error) {
+                console.error('Voice query error:', error);
+                showToast('Error: ' + error.message, 'error');
+                document.getElementById('voiceQueryStatus').textContent = 'Click to record your question';
+                document.getElementById('voiceQueryStatus').classList.remove('recording');
+                hideResponse();
+            } finally {
+                hideLoading();
+                const answerBox = document.querySelector('.answer-box');
+                if (answerBox) {
+                    answerBox.classList.remove('streaming');
+                }
+            }
+        }
+
+        async function processQuery(question) {
             showLoading();
             hideResponse();
             
