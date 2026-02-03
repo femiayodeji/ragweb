@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nigeria Tax Act (NTA), 2025 Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #008751;
+            border-bottom: 3px solid #fff;
+            padding: 16px 0;
+            box-shadow: 0 2px 8px rgba(0, 135, 81, 0.2);
+        }
+
+        .header-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: #fff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #008751;
+            font-size: 28px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.3;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 24px auto;
+            padding: 0 16px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #008751 0%, #00a85e 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 32px 24px;
+            text-align: center;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0, 135, 81, 0.2);
+        }
+
+        .hero h1 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .hero p {
+            font-size: 15px;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 24px;
+            background: #f0f0f0;
+            padding: 4px;
+            border-radius: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 110px;
+            padding: 12px 16px;
+            border: none;
+            background: transparent;
+            color: #666;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tab-btn:hover {
+            color: #008751;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: #008751;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .action-btn {
+            padding: 12px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff;
+            color: #008751;
+            border: 2px solid #008751;
+            min-width: 100px;
+        }
+
+        .action-btn:hover {
+            background: #008751;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #008751;
+            box-shadow: 0 0 0 3px rgba(0, 135, 81, 0.1);
+        }
+
+        .query-input-wrapper {
+            position: relative;
+        }
+
+        .voice-input-btn {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            background: white;
+            color: #666;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .voice-input-btn:hover {
+            background: #f8fafc;
+            border-color: #008751;
+            color: #008751;
+            transform: scale(1.05);
+        }
+
+        .voice-input-btn.listening {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: white;
+            animation: pulse-mic 1.5s infinite;
+        }
+
+        @keyframes pulse-mic {
+            0% { 
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+            50% { 
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+            100% { 
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+
+        .voice-status {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 8px;
+            text-align: right;
+            min-height: 20px;
+        }
+
+        .voice-status.active {
+            color: #ef4444;
+            font-weight: 500;
+        }
+
+        .voice-section {
+            text-align: center;
+        }
+
+        .voice-controls {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 32px;
+        }
+
+        .record-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .record-btn {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #008751 0%, #00a85e 100%);
+            color: white;
+            font-size: 48px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(0, 135, 81, 0.3);
+            position: relative;
+        }
+
+        .record-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(0, 135, 81, 0.4);
+        }
+
+        .record-btn.recording {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            animation: pulse-record 2s infinite;
+        }
+
+        @keyframes pulse-record {
+            0% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 0 30px rgba(239, 68, 68, 0);
+            }
+            100% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+
+        .record-status {
+            color: #64748b;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .record-status.recording {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .info-box {
+            background: #f0f9f4;
+            border: 1px solid #d1f0dc;
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 20px;
+        }
+
+        .info-box strong {
+            color: #008751;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .info-box ul {
+            list-style: none;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .info-box li:before {
+            content: "→ ";
+            color: #008751;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .file-upload {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 20px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 180px;
+        }
+
+        .file-upload:hover {
+            background: #f9f9f9;
+            border-color: #008751;
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .file-upload-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #008751 0%, #00a85e 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 14px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 135, 81, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .response-card {
+            margin-top: 0;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            display: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .response-card.active {
+            display: block;
+        }
+
+        .response-label {
+            font-weight: 600;
+            color: #008751;
+            margin-bottom: 10px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .response-text {
+            color: #333;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            font-size: 15px;
+        }
+
+        .answer-box {
+            background: #f0f9f4;
+            padding: 18px;
+            border-radius: 10px;
+            border: 2px solid #008751;
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .question-box {
+            background: #f9f9f9;
+            padding: 14px;
+            border-radius: 8px;
+            border-left: 4px solid #008751;
+        }
+
+        .answer-box.streaming::after {
+            content: '▊';
+            color: #3b82f6;
+            animation: blink 1s infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .answer-box .response-text {
+            line-height: 1.8;
+        }
+
+        .answer-box .response-text h1,
+        .answer-box .response-text h2,
+        .answer-box .response-text h3 {
+            color: #008751;
+            margin-top: 16px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .answer-box .response-text h1 {
+            font-size: 20px;
+        }
+
+        .answer-box .response-text h2 {
+            font-size: 18px;
+        }
+
+        .answer-box .response-text h3 {
+            font-size: 16px;
+        }
+
+        .answer-box .response-text p {
+            margin-bottom: 12px;
+        }
+
+        .answer-box .response-text ul,
+        .answer-box .response-text ol {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+
+        .answer-box .response-text li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-box .response-text strong {
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        .answer-box .response-text code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .audio-player {
+            margin-top: 20px;
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 48px;
+            display: none;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #e0e0e0;
+            border-top: 4px solid #008751;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 32px 20px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1e293b;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            max-width: 400px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            background: #dc2626;
+        }
+
+        .toast.success {
+            background: #16a34a;
+        }
+
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 15px;
+            }
+
+            .logo {
+                width: 45px;
+                height: 45px;
+                font-size: 24px;
+            }
+
+            .hero {
+                padding: 24px 16px;
+            }
+
+            .hero h1 {
+                font-size: 20px;
+            }
+
+            .hero p {
+                font-size: 14px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .tabs {
+                gap: 4px;
+            }
+
+            .tab-btn {
+                padding: 10px 12px;
+                font-size: 13px;
+                min-width: 90px;
+            }
+
+            .action-btn {
+                padding: 10px 14px;
+                font-size: 13px;
+                min-width: 80px;
+            }
+
+            .record-btn {
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
+            }
+
+            .voice-controls {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .file-upload {
+                width: 100%;
+            }
+
+            .response-card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">🏛️</div>
+            <div class="header-title">Government Service Assistant</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="hero">
+            <h1>How can we help you today?</h1>
+            <p>Ask questions about government services and get instant, accurate answers from official documents</p>
+        </div>
+
+        <div class="card">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('query')">
+                    <span>💬</span> Query
+                </button>
+                <button class="tab-btn" onclick="switchTab('voiceQuery')">
+                    <span>🎙️</span> Voice Query
+                </button>
+                <button class="tab-btn" onclick="switchTab('voiceFull')">
+                    <span>🎤</span> Voice Full
+                </button>
+                <button class="action-btn" onclick="startNewConversation()" style="margin-left: auto; background: #dbeafe; color: #1e40af;">
+                    <span>✨</span> New
+                </button>
+            </div>
+
+            <div id="queryTab" class="tab-content active">
+                <textarea 
+                    id="textInput" 
+                    class="text-input" 
+                    placeholder="Type your question here... (e.g., How do I apply for a passport?)"
+                ></textarea>
+                <button class="btn-primary" onclick="submitText()">Submit Question</button>
+            </div>
+
+            <div id="voiceQueryTab" class="tab-content">
+                <div class="voice-section">
+                    <div class="voice-controls">
+                        <div class="record-container">
+                            <button class="record-btn" id="voiceQueryRecordBtn" onclick="toggleVoiceQueryRecording()">🎤</button>
+                            <p class="record-status" id="voiceQueryStatus">Click to record your question</p>
+                        </div>
+
+                        <div class="file-upload" onclick="document.getElementById('voiceQueryAudioFile').click()">
+                            <div class="file-upload-icon">📁</div>
+                            <p style="font-weight: 600; color: #1e293b; margin-bottom: 4px;">Upload Audio File</p>
+                            <p style="font-size: 13px; color: #64748b;">WAV, MP3, WEBM, M4A supported</p>
+                            <input type="file" id="voiceQueryAudioFile" accept="audio/*" onchange="handleVoiceQueryAudioUpload()">
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>How to use:</strong>
+                        <ul>
+                            <li>Click the microphone to start recording</li>
+                            <li>Speak your question clearly</li>
+                            <li>Click again to stop and get text response</li>
+                            <li>Or upload a pre-recorded audio file</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div id="voiceFullTab" class="tab-content">
+                <div class="voice-section">
+                    <div class="voice-controls">
+                        <div class="record-container">
+                            <button class="record-btn" id="recordBtn" onclick="toggleRecording()">🎤</button>
+                            <p class="record-status" id="recordStatus">Ready to record</p>
+                        </div>
+
+                        <div class="file-upload" onclick="document.getElementById('audioFile').click()">
+                            <div class="file-upload-icon">📁</div>
+                            <p style="font-weight: 600; color: #1e293b; margin-bottom: 4px;">Upload Audio File</p>
+                            <p style="font-size: 13px; color: #64748b;">WAV, MP3, WEBM, M4A supported</p>
+                            <input type="file" id="audioFile" accept="audio/*" onchange="handleAudioUpload()">
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>How to use voice:</strong>
+                        <ul>
+                            <li>Click the microphone button to start</li>
+                            <li>Allow microphone access when prompted</li>
+                            <li>Speak your question clearly</li>
+                            <li>Click again to stop and get audio response</li>
+                            <li>Or upload a pre-recorded audio file</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p class="loading-text">Processing your question...</p>
+            </div>
+
+            <div class="response-card" id="responseSection">
+                <div class="question-box">
+                    <div class="response-label">Your Question</div>
+                    <div class="response-text" id="questionText"></div>
+                </div>
+                
+                <div class="answer-box">
+                    <div class="response-label">Answer</div>
+                    <div class="response-text" id="answerText"></div>
+                </div>
+                
+                <div id="audioResponse" style="display: none;">
+                    <div class="response-label" style="margin-top: 20px;">Listen to Answer</div>
+                    <audio controls class="audio-player" id="audioPlayer"></audio>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        const API_URL = 'https://ragapp-5avd.onrender.com';
+        let isRecording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recordingTimer = null;
+        let recordingSeconds = 0;
+        let sessionId = sessionStorage.getItem('sessionId') || null;  // Changed from localStorage to sessionStorage
+        
+        // Typing effect variables
+        let typingQueue = '';
+        let isTyping = false;
+        let typingSpeed = 30; // milliseconds per character
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast show ' + type;
+            setTimeout(() => toast.className = 'toast', 3000);
+        }
+
+        async function typeText(text, elementId) {
+            typingQueue += text;
+            
+            if (isTyping) return;
+            
+            isTyping = true;
+            const element = document.getElementById(elementId);
+            let currentText = element.getAttribute('data-raw-text') || '';
+            
+            while (typingQueue.length > 0) {
+                const char = typingQueue[0];
+                typingQueue = typingQueue.slice(1);
+                currentText += char;
+                element.setAttribute('data-raw-text', currentText);
+                element.innerHTML = formatAnswer(currentText);
+                await new Promise(resolve => setTimeout(resolve, typingSpeed));
+            }
+            
+            isTyping = false;
+        }
+
+        function clearTypingQueue() {
+            typingQueue = '';
+            isTyping = false;
+        }
+
+        function switchTab(tab) {
+            const queryTab = document.getElementById('queryTab');
+            const voiceQueryTab = document.getElementById('voiceQueryTab');
+            const voiceFullTab = document.getElementById('voiceFullTab');
+            const buttons = document.querySelectorAll('.tab-btn');
+
+            // Remove active from all buttons except the special ones (New Session, Clear History)
+            buttons.forEach(btn => {
+                if (!btn.onclick.toString().includes('startNewConversation') && 
+                    !btn.onclick.toString().includes('clearConversation')) {
+                    btn.classList.remove('active');
+                }
+            });
+            event.target.closest('.tab-btn').classList.add('active');
+
+            // Hide all tabs
+            queryTab.classList.remove('active');
+            voiceQueryTab.classList.remove('active');
+            voiceFullTab.classList.remove('active');
+
+            // Show the selected tab
+            if (tab === 'query') {
+                queryTab.classList.add('active');
+            } else if (tab === 'voiceQuery') {
+                voiceQueryTab.classList.add('active');
+            } else if (tab === 'voiceFull') {
+                voiceFullTab.classList.add('active');
+            }
+        }
+
+        function startNewConversation() {
+            // Start a new session locally without calling backend
+            sessionId = null;
+            sessionStorage.removeItem('sessionId');
+            hideResponse();
+            document.getElementById('textInput').value = '';
+            showToast('Starting new session', 'info');
+        }
+
+        async function submitText() {
+            const question = document.getElementById('textInput').value.trim();
+            
+            if (!question) {
+                showToast('Please enter a question', 'error');
+                return;
+            }
+
+            processQuery(question);
+        }
+
+        // Voice Query tab recording
+        let isVoiceQueryRecording = false;
+        let voiceQueryMediaRecorder = null;
+        let voiceQueryAudioChunks = [];
+        let voiceQueryRecordingTimer = null;
+        let voiceQueryRecordingStartTime = 0;
+
+        async function toggleVoiceQueryRecording() {
+            if (!isVoiceQueryRecording) {
+                startVoiceQueryRecording();
+            } else {
+                stopVoiceQueryRecording();
+            }
+        }
+
+        async function startVoiceQueryRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        sampleRate: 16000
+                    } 
+                });
+                
+                const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') 
+                    ? 'audio/webm;codecs=opus' 
+                    : 'audio/webm';
+                
+                voiceQueryMediaRecorder = new MediaRecorder(stream, { mimeType });
+                voiceQueryAudioChunks = [];
+
+                voiceQueryMediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        voiceQueryAudioChunks.push(event.data);
+                    }
+                };
+
+                voiceQueryMediaRecorder.onstop = async () => {
+                    if (voiceQueryRecordingTimer) {
+                        clearInterval(voiceQueryRecordingTimer);
+                        voiceQueryRecordingTimer = null;
+                    }
+                    
+                    const audioBlob = new Blob(voiceQueryAudioChunks, { type: mimeType });
+                    await sendVoiceQueryAudio(audioBlob);
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                voiceQueryMediaRecorder.start(1000);
+                isVoiceQueryRecording = true;
+                voiceQueryRecordingStartTime = Date.now();
+
+                document.getElementById('voiceQueryRecordBtn').classList.add('recording');
+                document.getElementById('voiceQueryStatus').textContent = '🔴 Recording... 0:00';
+                document.getElementById('voiceQueryStatus').classList.add('recording');
+                
+                voiceQueryRecordingTimer = setInterval(() => {
+                    const elapsed = Math.floor((Date.now() - voiceQueryRecordingStartTime) / 1000);
+                    const minutes = Math.floor(elapsed / 60);
+                    const seconds = elapsed % 60;
+                    const timeStr = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    document.getElementById('voiceQueryStatus').textContent = `🔴 Recording... ${timeStr}`;
+                }, 1000);
+
+            } catch (error) {
+                showToast('Microphone access denied. Please check your browser settings.', 'error');
+            }
+        }
+
+        function stopVoiceQueryRecording() {
+            if (voiceQueryMediaRecorder && isVoiceQueryRecording) {
+                isVoiceQueryRecording = false;
+                
+                if (voiceQueryMediaRecorder.state !== 'inactive') {
+                    voiceQueryMediaRecorder.stop();
+                }
+
+                document.getElementById('voiceQueryRecordBtn').classList.remove('recording');
+                document.getElementById('voiceQueryStatus').textContent = 'Processing your audio...';
+                document.getElementById('voiceQueryStatus').classList.remove('recording');
+            }
+        }
+
+        async function handleVoiceQueryAudioUpload() {
+            const file = document.getElementById('voiceQueryAudioFile').files[0];
+            if (!file) return;
+            await sendVoiceQueryAudio(file);
+        }
+
+        async function sendVoiceQueryAudio(audioBlob) {
+            showLoading();
+            hideResponse();
+            clearTypingQueue();
+
+            const formData = new FormData();
+            const fileName = audioBlob.type.includes('webm') ? 'recording.webm' : 'recording.wav';
+            formData.append('audio', audioBlob, fileName);
+
+            try {
+                // Build URL with session_id parameter
+                const url = new URL(`${API_URL}/voice-query`);
+                if (sessionId) {
+                    url.searchParams.append('session_id', sessionId);
+                }
+
+                const response = await fetch(url.toString(), {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    let errorMessage = 'Failed to process voice query';
+                    try {
+                        const errorData = await response.json();
+                        errorMessage = errorData.detail || errorMessage;
+                    } catch (e) {
+                        const errorText = await response.text();
+                        errorMessage = errorText || errorMessage;
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                // Show response section with placeholders
+                document.getElementById('questionText').textContent = 'Processing your voice...';
+                document.getElementById('answerText').innerHTML = '';
+                document.getElementById('answerText').setAttribute('data-raw-text', '');
+                document.getElementById('responseSection').classList.add('active');
+                
+                const answerBox = document.querySelector('.answer-box');
+                answerBox.classList.add('streaming');
+
+                // Handle SSE streaming response
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+                let fullQuestion = '';
+
+                console.log('Starting to read voice query SSE stream...');
+                
+                hideLoading();
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) {
+                        console.log('Voice query stream complete');
+                        break;
+                    }
+
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n\n');
+                    buffer = lines.pop();
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            try {
+                                const data = JSON.parse(line.slice(6));
+                                console.log('Voice query received:', data);
+                                
+                                if (data.session_id) {
+                                    sessionId = data.session_id;
+                                    sessionStorage.setItem('sessionId', sessionId);
+                                } else if (data.question) {
+                                    fullQuestion = data.question;
+                                    document.getElementById('questionText').textContent = fullQuestion;
+                                } else if (data.token !== undefined) {
+                                    await typeText(data.token, 'answerText');
+                                } else if (data.done === true) {
+                                    // Wait for typing to complete
+                                    while (isTyping || typingQueue.length > 0) {
+                                        await new Promise(resolve => setTimeout(resolve, 50));
+                                    }
+                                    answerBox.classList.remove('streaming');
+                                    
+                                    // Get TTS for the answer
+                                    const fullAnswer = document.getElementById('answerText').getAttribute('data-raw-text') || '';
+                                    if (fullAnswer) {
+                                        getTTS(fullAnswer);
+                                    }
+                                    
+                                    document.getElementById('voiceQueryStatus').textContent = '✓ Complete';
+                                    document.getElementById('voiceQueryStatus').classList.remove('recording');
+                                    
+                                    setTimeout(() => {
+                                        document.getElementById('voiceQueryStatus').textContent = 'Click to record your question';
+                                    }, 3000);
+                                } else if (data.error) {
+                                    throw new Error(data.error || 'Streaming error');
+                                }
+                            } catch (parseError) {
+                                console.error('Failed to parse voice query SSE data:', parseError, line);
+                            }
+                        }
+                    }
+                }
+
+            } catch (error) {
+                console.error('Voice query error:', error);
+                showToast('Error: ' + error.message, 'error');
+                document.getElementById('voiceQueryStatus').textContent = 'Click to record your question';
+                document.getElementById('voiceQueryStatus').classList.remove('recording');
+                hideResponse();
+            } finally {
+                // Wait for any remaining typing to complete
+                while (isTyping || typingQueue.length > 0) {
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+                hideLoading();
+                const answerBox = document.querySelector('.answer-box');
+                if (answerBox) {
+                    answerBox.classList.remove('streaming');
+                }
+            }
+        }
+
+        async function processQuery(question) {
+            showLoading();
+            hideResponse();
+            clearTypingQueue();
+            
+            // Show question immediately
+            document.getElementById('questionText').textContent = question;
+            document.getElementById('answerText').innerHTML = '';
+            document.getElementById('answerText').setAttribute('data-raw-text', '');
+            document.getElementById('responseSection').classList.add('active');
+            
+            // Add streaming indicator
+            const answerBox = document.querySelector('.answer-box');
+            answerBox.classList.add('streaming');
+
+            try {
+                const response = await fetch(`${API_URL}/query`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'text/event-stream'
+                    },
+                    body: JSON.stringify({ question, session_id: sessionId })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.detail || 'Failed to get response');
+                }
+
+                // Check if response body exists
+                if (!response.body) {
+                    throw new Error('Response body is null - streaming not supported');
+                }
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+
+                console.log('Starting to read SSE stream...', {
+                    headers: Object.fromEntries(response.headers.entries()),
+                    status: response.status
+                });
+
+                hideLoading();
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) {
+                        console.log('Stream complete');
+                        break;
+                    }
+
+                    const chunk = decoder.decode(value, { stream: true });
+                    console.log('Raw chunk received:', chunk);
+                    buffer += chunk;
+                    const lines = buffer.split('\n\n');
+                    buffer = lines.pop();
+
+                    for (const line of lines) {
+                        console.log('Processing line:', line);
+                        if (line.startsWith('data: ')) {
+                            try {
+                                const data = JSON.parse(line.slice(6));
+                                console.log('Received:', data);
+                                
+                                if (data.session_id) {
+                                    sessionId = data.session_id;
+                                    sessionStorage.setItem('sessionId', sessionId);
+                                } else if (data.token !== undefined) {
+                                    await typeText(data.token, 'answerText');
+                                } else if (data.done === true) {
+                                    // Wait for typing to complete
+                                    while (isTyping || typingQueue.length > 0) {
+                                        await new Promise(resolve => setTimeout(resolve, 50));
+                                    }
+                                    answerBox.classList.remove('streaming');
+                                    const fullAnswer = document.getElementById('answerText').getAttribute('data-raw-text') || '';
+                                    getTTS(fullAnswer);
+                                } else if (data.error) {
+                                    throw new Error(data.error || 'Streaming error');
+                                }
+                            } catch (parseError) {
+                                console.error('Failed to parse SSE data:', parseError, line);
+                            }
+                        }
+                    }
+                }
+
+            } catch (error) {
+                console.error('Query error:', error);
+                showToast('Error: ' + error.message, 'error');
+                hideResponse();
+                answerBox.classList.remove('streaming');
+            } finally {
+                // Wait for any remaining typing to complete
+                while (isTyping || typingQueue.length > 0) {
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+                hideLoading();
+                const answerBox = document.querySelector('.answer-box');
+                if (answerBox) {
+                    answerBox.classList.remove('streaming');
+                }
+            }
+        }
+
+        async function toggleRecording() {
+            if (!isRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        sampleRate: 16000
+                    } 
+                });
+                
+                const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') 
+                    ? 'audio/webm;codecs=opus' 
+                    : 'audio/webm';
+                
+                mediaRecorder = new MediaRecorder(stream, { mimeType });
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = async () => {
+                    if (recordingTimer) {
+                        clearInterval(recordingTimer);
+                        recordingTimer = null;
+                    }
+                    
+                    const audioBlob = new Blob(audioChunks, { type: mimeType });
+                    await sendVoiceQuery(audioBlob);
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                mediaRecorder.start(1000);
+                isRecording = true;
+                recordingStartTime = Date.now();
+
+                document.getElementById('recordBtn').classList.add('recording');
+                document.getElementById('recordStatus').textContent = '🔴 Recording... 0:00';
+                document.getElementById('recordStatus').classList.add('recording');
+                
+                recordingTimer = setInterval(() => {
+                    const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+                    const minutes = Math.floor(elapsed / 60);
+                    const seconds = elapsed % 60;
+                    const timeStr = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    document.getElementById('recordStatus').textContent = `🔴 Recording... ${timeStr}`;
+                }, 1000);
+
+            } catch (error) {
+                showToast('Microphone access denied. Please check your browser settings.', 'error');
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                isRecording = false;
+                
+                if (mediaRecorder.state !== 'inactive') {
+                    mediaRecorder.stop();
+                }
+
+                document.getElementById('recordBtn').classList.remove('recording');
+                document.getElementById('recordStatus').textContent = 'Processing your audio...';
+                document.getElementById('recordStatus').classList.remove('recording');
+            }
+        }
+
+        async function handleAudioUpload() {
+            const file = document.getElementById('audioFile').files[0];
+            if (!file) return;
+            await sendVoiceQuery(file);
+        }
+
+        async function sendVoiceQuery(audioBlob) {
+            showLoading();
+            hideResponse();
+
+            const formData = new FormData();
+            const fileName = audioBlob.type.includes('webm') ? 'recording.webm' : 'recording.wav';
+            formData.append('audio', audioBlob, fileName);
+            if (sessionId) {
+                formData.append('session_id', sessionId);
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/voice-full`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Failed to process voice query');
+                }
+
+                // Get session ID from headers
+                const newSessionId = response.headers.get('X-Session-Id');
+                if (newSessionId) {
+                    sessionId = newSessionId;
+                    sessionStorage.setItem('sessionId', sessionId);
+                }
+
+                // Get audio response
+                const audioBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+                
+                const audioPlayer = document.getElementById('audioPlayer');
+                audioPlayer.src = audioUrl;
+                document.getElementById('audioResponse').style.display = 'block';
+
+                // Show response section with placeholder
+                document.getElementById('questionText').textContent = 'Processing your voice question...';
+                document.getElementById('answerText').innerHTML = '<p><em>Listen to the audio response above</em></p>';
+                document.getElementById('responseSection').classList.add('active');
+
+                document.getElementById('recordStatus').textContent = '✓ Complete';
+                document.getElementById('recordStatus').classList.remove('recording');
+                
+                setTimeout(() => {
+                    document.getElementById('recordStatus').textContent = 'Ready to record';
+                }, 3000);
+
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+                document.getElementById('recordStatus').textContent = 'Ready to record';
+                document.getElementById('recordStatus').classList.remove('recording');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function getTTS(text) {
+            try {
+                const response = await fetch(`${API_URL}/text-to-speech`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question: text })
+                });
+
+                if (response.ok) {
+                    const audioBlob = await response.blob();
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    
+                    const audioPlayer = document.getElementById('audioPlayer');
+                    audioPlayer.src = audioUrl;
+                    document.getElementById('audioResponse').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('TTS error:', error);
+            }
+        }
+
+        function displayResponse(question, answer) {
+            document.getElementById('questionText').textContent = question;
+            
+            // Format the answer text
+            const formattedAnswer = formatAnswer(answer);
+            document.getElementById('answerText').innerHTML = formattedAnswer;
+            
+            document.getElementById('responseSection').classList.add('active');
+        }
+
+        function formatAnswer(text) {
+            // Convert markdown-style formatting to HTML
+            let formatted = text;
+
+            // Convert **bold** to <strong>
+            formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+            // Convert numbered lists (1. 2. 3.)
+            formatted = formatted.replace(/^(\d+)\.\s+(.+)$/gm, '<li>$2</li>');
+            
+            // Wrap consecutive <li> in <ol>
+            formatted = formatted.replace(/(<li>.*<\/li>\n?)+/g, '<ol>$&</ol>');
+
+            // Convert bullet points (-, *, •)
+            formatted = formatted.replace(/^[-*•]\s+(.+)$/gm, '<li>$1</li>');
+            
+            // Wrap consecutive bullet <li> in <ul> (that aren't already in ol)
+            formatted = formatted.replace(/(<li>.*<\/li>\n?)+(?!<\/ol>)/g, function(match) {
+                if (!match.includes('<ol>')) {
+                    return '<ul>' + match + '</ul>';
+                }
+                return match;
+            });
+
+            // Convert section headers (lines that end with :)
+            formatted = formatted.replace(/^(.+):$/gm, '<h3>$1</h3>');
+
+            // Convert double line breaks to paragraphs
+            const paragraphs = formatted.split(/\n\n+/);
+            formatted = paragraphs.map(p => {
+                // Don't wrap if already wrapped in tags
+                if (p.trim().startsWith('<')) {
+                    return p;
+                }
+                return '<p>' + p.trim() + '</p>';
+            }).join('');
+
+            // Convert single line breaks to <br>
+            formatted = formatted.replace(/\n(?!<)/g, '<br>');
+
+            return formatted;
+        }
+
+        function showLoading() {
+            document.getElementById('loading').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').classList.remove('active');
+        }
+
+        function hideResponse() {
+            document.getElementById('responseSection').classList.remove('active');
+            document.getElementById('audioResponse').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
