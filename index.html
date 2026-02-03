@@ -623,9 +623,6 @@
                 <button class="action-btn" onclick="startNewConversation()" style="margin-left: auto; background: #dbeafe; color: #1e40af;">
                     <span>✨</span> New
                 </button>
-                <button class="action-btn" onclick="clearConversation()" style="background: #fee2e2; color: #dc2626;">
-                    <span>🗑️</span> Clear
-                </button>
             </div>
 
             <div id="queryTab" class="tab-content active">
@@ -721,19 +718,50 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        const API_URL = 'http://localhost:8000';
+        const API_URL = 'https://ragapp-5avd.onrender.com';
         let isRecording = false;
         let mediaRecorder = null;
         let audioChunks = [];
         let recordingTimer = null;
         let recordingSeconds = 0;
         let sessionId = sessionStorage.getItem('sessionId') || null;  // Changed from localStorage to sessionStorage
+        
+        // Typing effect variables
+        let typingQueue = '';
+        let isTyping = false;
+        let typingSpeed = 30; // milliseconds per character
 
         function showToast(message, type = 'info') {
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.className = 'toast show ' + type;
             setTimeout(() => toast.className = 'toast', 3000);
+        }
+
+        async function typeText(text, elementId) {
+            typingQueue += text;
+            
+            if (isTyping) return;
+            
+            isTyping = true;
+            const element = document.getElementById(elementId);
+            let currentText = element.getAttribute('data-raw-text') || '';
+            
+            while (typingQueue.length > 0) {
+                const char = typingQueue[0];
+                typingQueue = typingQueue.slice(1);
+                currentText += char;
+                element.setAttribute('data-raw-text', currentText);
+                element.innerHTML = formatAnswer(currentText);
+                await new Promise(resolve => setTimeout(resolve, typingSpeed));
+            }
+            
+            isTyping = false;
+        }
+
+        function clearTypingQueue() {
+            typingQueue = '';
+            isTyping = false;
         }
 
         function switchTab(tab) {
@@ -766,29 +794,8 @@
             }
         }
 
-        function clearConversation() {
-            if (!confirm('Clear conversation history? This will delete all messages from the server.')) {
-                return;
-            }
-
-            const currentSessionId = sessionId;
-            sessionId = null;
-            sessionStorage.removeItem('sessionId');
-            hideResponse();
-            document.getElementById('textInput').value = '';
-
-            // Clear session on backend if it exists
-            if (currentSessionId && AppState.session_service) {
-                fetch(`${API_URL}/session/${currentSessionId}`, {
-                    method: 'DELETE'
-                }).catch(err => console.log('Failed to clear backend session:', err));
-            }
-
-            showToast('Conversation cleared', 'success');
-        }
-
         function startNewConversation() {
-            // Just start a new session without clearing backend history
+            // Start a new session locally without calling backend
             sessionId = null;
             sessionStorage.removeItem('sessionId');
             hideResponse();
@@ -900,6 +907,7 @@
         async function sendVoiceQueryAudio(audioBlob) {
             showLoading();
             hideResponse();
+            clearTypingQueue();
 
             const formData = new FormData();
             const fileName = audioBlob.type.includes('webm') ? 'recording.webm' : 'recording.wav';
@@ -932,6 +940,7 @@
                 // Show response section with placeholders
                 document.getElementById('questionText').textContent = 'Processing your voice...';
                 document.getElementById('answerText').innerHTML = '';
+                document.getElementById('answerText').setAttribute('data-raw-text', '');
                 document.getElementById('responseSection').classList.add('active');
                 
                 const answerBox = document.querySelector('.answer-box');
@@ -942,9 +951,10 @@
                 const decoder = new TextDecoder();
                 let buffer = '';
                 let fullQuestion = '';
-                let fullAnswer = '';
 
                 console.log('Starting to read voice query SSE stream...');
+                
+                hideLoading();
 
                 while (true) {
                     const { done, value } = await reader.read();
@@ -961,22 +971,25 @@
                         if (line.startsWith('data: ')) {
                             try {
                                 const data = JSON.parse(line.slice(6));
-                                console.log('Voice query received:', data.type, data);
+                                console.log('Voice query received:', data);
                                 
-                                if (data.type === 'session_id') {
+                                if (data.session_id) {
                                     sessionId = data.session_id;
                                     sessionStorage.setItem('sessionId', sessionId);
-                                } else if (data.type === 'question') {
+                                } else if (data.question) {
                                     fullQuestion = data.question;
                                     document.getElementById('questionText').textContent = fullQuestion;
-                                } else if (data.type === 'token') {
-                                    fullAnswer += data.token;
-                                    document.getElementById('answerText').innerHTML = formatAnswer(fullAnswer);
-                                } else if (data.type === 'done') {
+                                } else if (data.token !== undefined) {
+                                    await typeText(data.token, 'answerText');
+                                } else if (data.done === true) {
+                                    // Wait for typing to complete
+                                    while (isTyping || typingQueue.length > 0) {
+                                        await new Promise(resolve => setTimeout(resolve, 50));
+                                    }
                                     answerBox.classList.remove('streaming');
-                                    hideLoading();
                                     
                                     // Get TTS for the answer
+                                    const fullAnswer = document.getElementById('answerText').getAttribute('data-raw-text') || '';
                                     if (fullAnswer) {
                                         getTTS(fullAnswer);
                                     }
@@ -987,7 +1000,7 @@
                                     setTimeout(() => {
                                         document.getElementById('voiceQueryStatus').textContent = 'Click to record your question';
                                     }, 3000);
-                                } else if (data.type === 'error') {
+                                } else if (data.error) {
                                     throw new Error(data.error || 'Streaming error');
                                 }
                             } catch (parseError) {
@@ -1004,6 +1017,10 @@
                 document.getElementById('voiceQueryStatus').classList.remove('recording');
                 hideResponse();
             } finally {
+                // Wait for any remaining typing to complete
+                while (isTyping || typingQueue.length > 0) {
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
                 hideLoading();
                 const answerBox = document.querySelector('.answer-box');
                 if (answerBox) {
@@ -1015,10 +1032,12 @@
         async function processQuery(question) {
             showLoading();
             hideResponse();
+            clearTypingQueue();
             
             // Show question immediately
             document.getElementById('questionText').textContent = question;
             document.getElementById('answerText').innerHTML = '';
+            document.getElementById('answerText').setAttribute('data-raw-text', '');
             document.getElementById('responseSection').classList.add('active');
             
             // Add streaming indicator
@@ -1028,7 +1047,10 @@
             try {
                 const response = await fetch(`${API_URL}/query`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'text/event-stream'
+                    },
                     body: JSON.stringify({ question, session_id: sessionId })
                 });
 
@@ -1037,12 +1059,21 @@
                     throw new Error(errorData.detail || 'Failed to get response');
                 }
 
+                // Check if response body exists
+                if (!response.body) {
+                    throw new Error('Response body is null - streaming not supported');
+                }
+
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 let buffer = '';
-                let fullAnswer = '';
 
-                console.log('Starting to read SSE stream...');
+                console.log('Starting to read SSE stream...', {
+                    headers: Object.fromEntries(response.headers.entries()),
+                    status: response.status
+                });
+
+                hideLoading();
 
                 while (true) {
                     const { done, value } = await reader.read();
@@ -1051,27 +1082,33 @@
                         break;
                     }
 
-                    buffer += decoder.decode(value, { stream: true });
+                    const chunk = decoder.decode(value, { stream: true });
+                    console.log('Raw chunk received:', chunk);
+                    buffer += chunk;
                     const lines = buffer.split('\n\n');
                     buffer = lines.pop();
 
                     for (const line of lines) {
+                        console.log('Processing line:', line);
                         if (line.startsWith('data: ')) {
                             try {
                                 const data = JSON.parse(line.slice(6));
-                                console.log('Received:', data.type, data);
+                                console.log('Received:', data);
                                 
-                                if (data.type === 'session_id') {
+                                if (data.session_id) {
                                     sessionId = data.session_id;
                                     sessionStorage.setItem('sessionId', sessionId);
-                                } else if (data.type === 'token') {
-                                    fullAnswer += data.token;
-                                    document.getElementById('answerText').innerHTML = formatAnswer(fullAnswer);
-                                } else if (data.type === 'done') {
+                                } else if (data.token !== undefined) {
+                                    await typeText(data.token, 'answerText');
+                                } else if (data.done === true) {
+                                    // Wait for typing to complete
+                                    while (isTyping || typingQueue.length > 0) {
+                                        await new Promise(resolve => setTimeout(resolve, 50));
+                                    }
                                     answerBox.classList.remove('streaming');
-                                    hideLoading();
+                                    const fullAnswer = document.getElementById('answerText').getAttribute('data-raw-text') || '';
                                     getTTS(fullAnswer);
-                                } else if (data.type === 'error') {
+                                } else if (data.error) {
                                     throw new Error(data.error || 'Streaming error');
                                 }
                             } catch (parseError) {
@@ -1087,8 +1124,15 @@
                 hideResponse();
                 answerBox.classList.remove('streaming');
             } finally {
+                // Wait for any remaining typing to complete
+                while (isTyping || typingQueue.length > 0) {
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
                 hideLoading();
-                answerBox.classList.remove('streaming');
+                const answerBox = document.querySelector('.answer-box');
+                if (answerBox) {
+                    answerBox.classList.remove('streaming');
+                }
             }
         }
 
