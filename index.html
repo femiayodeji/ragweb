@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NTA 2025 Assistant - Nigeria Tax Act</title>
+    <title>Ofing - Legal Guidance for Nigerian Citizens</title>
     <style>
         * {
             margin: 0;
@@ -93,6 +93,60 @@
         .new-chat-btn:hover {
             background: #008751;
             color: white;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            margin: 8px auto 0;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #008751;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(16px);
         }
 
         .container {
@@ -574,6 +628,43 @@
                 padding: 6px 12px;
                 font-size: 12px;
             }
+
+            .input-container {
+                gap: 12px;
+            }
+
+            .text-input {
+                font-size: 16px;
+            }
+
+            .voice-controls {
+                gap: 12px;
+            }
+
+            .toggle-switch {
+                font-size: 12px;
+                gap: 6px;
+            }
+
+            .switch {
+                width: 32px;
+                height: 18px;
+            }
+
+            .slider:before {
+                height: 12px;
+                width: 12px;
+            }
+
+            input:checked + .slider:before {
+                transform: translateX(14px);
+            }
+
+            .audio-player {
+                width: 100%;
+                height: 36px;
+                margin-top: 8px;
+            }
         }
     </style>
 </head>
@@ -581,10 +672,9 @@
     <div class="header">
         <div class="header-content">
             <div class="logo-section">
-                <div class="logo">🇳🇬</div>
                 <div class="header-title">
-                    <h1>NTA 2025 Assistant</h1>
-                    <p>Nigeria Tax Act Expert</p>
+                    <h1><span style="color: #008751;">O</span>fing</h1>
+                    <p>For Nigerian Citizens</p>
                 </div>
             </div>
             <button class="new-chat-btn" onclick="startNewConversation()">
@@ -595,21 +685,23 @@
 
     <div class="container">
         <div id="welcomeCard" class="welcome-card">
-            <div class="welcome-icon">🇳🇬</div>
-            <h2>Nigeria Tax Act (NTA), 2025</h2>
-            <p>Ask me anything about Nigerian tax regulations, obligations, and compliance requirements.</p>
+            <h2><span style="color: #008751;">O</span>fing</h2>
+            <p>Understand Nigerian law and how it applies to you. Get clear guidance on Data Protection, Tenancy Law, Constitutional Rights, Tax Law, and Road Safety Law.</p>
             <div class="suggestions">
-                <div class="suggestion-chip" onclick="askSuggestion('What are the tax obligations for small businesses in Nigeria?')">
-                    💼 Tax for small businesses
+                <div class="suggestion-chip" onclick="askSuggestion('What are my data protection rights under the Data Protection Regulation in Nigeria?')">
+                    🔒 Data Protection
                 </div>
-                <div class="suggestion-chip" onclick="askSuggestion('How do I file my annual tax returns?')">
-                    📄 Filing tax returns
+                <div class="suggestion-chip" onclick="askSuggestion('What are tenant rights and landlord obligations under Nigerian Tenancy Law?')">
+                    🏠 Tenancy Law
                 </div>
-                <div class="suggestion-chip" onclick="askSuggestion('What are the VAT requirements under NTA 2025?')">
-                    🧾 VAT requirements
+                <div class="suggestion-chip" onclick="askSuggestion('What are the fundamental human rights guaranteed by the Nigerian Constitution?')">
+                    ⚖️ Constitutional Rights
                 </div>
-                <div class="suggestion-chip" onclick="askSuggestion('What tax deductions are available?')">
-                    💰 Tax deductions
+                <div class="suggestion-chip" onclick="askSuggestion('How do personal income tax and business taxes work in Nigeria?')">
+                    💰 Tax Law
+                </div>
+                <div class="suggestion-chip" onclick="askSuggestion('What are the traffic rules and road safety laws in Nigeria?')">
+                    🚗 Road Safety Law
                 </div>
             </div>
         </div>
@@ -631,16 +723,13 @@
                 <button class="mode-btn" onclick="switchMode('voice-query')">
                     🎙️ Voice Reply
                 </button>
-                <button class="mode-btn" onclick="switchMode('voice-full')">
-                    🎤 Voice Full
-                </button>
             </div>
 
             <div id="textMode" class="input-wrapper">
                 <textarea 
                     id="textInput" 
                     class="text-input" 
-                    placeholder="Ask about tax regulations..."
+                    placeholder="Ask about Nigerian law..."
                     rows="1"
                     onkeydown="handleKeyPress(event)"
                 ></textarea>
@@ -649,18 +738,16 @@
 
             <div id="voiceQueryMode" class="voice-controls">
                 <button class="record-btn" id="voiceQueryRecordBtn" onclick="toggleVoiceQueryRecording()">🎤</button>
+                <div class="toggle-switch">
+                    <span>🔊 Auto Play</span>
+                    <label class="switch">
+                        <input type="checkbox" id="autoPlayToggle" onchange="toggleAutoPlay()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
                 <p class="record-status" id="voiceQueryStatus">Tap to record your question</p>
                 <input type="file" id="voiceQueryAudioFile" accept="audio/*" style="display: none;" onchange="handleVoiceQueryAudioUpload()">
                 <button class="upload-btn" onclick="document.getElementById('voiceQueryAudioFile').click()">
-                    📁 Upload Audio
-                </button>
-            </div>
-
-            <div id="voiceFullMode" class="voice-controls">
-                <button class="record-btn" id="recordBtn" onclick="toggleRecording()">🎤</button>
-                <p class="record-status" id="recordStatus">Tap to record</p>
-                <input type="file" id="audioFile" accept="audio/*" style="display: none;" onchange="handleAudioUpload()">
-                <button class="upload-btn" onclick="document.getElementById('audioFile').click()">
                     📁 Upload Audio
                 </button>
             </div>
@@ -670,7 +757,9 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        const API_URL = 'https://ragapp-5avd.onrender.com';
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:8000' 
+            : 'https://ragapp-5avd.onrender.com';
         let isRecording = false;
         let mediaRecorder = null;
         let audioChunks = [];
@@ -678,11 +767,15 @@
         let recordingSeconds = 0;
         let sessionId = sessionStorage.getItem('sessionId') || null;
         let currentMode = 'text';
+        let autoPlayEnabled = localStorage.getItem('autoPlayEnabled') !== 'false';
         
         // Typing effect variables
         let typingQueue = '';
         let isTyping = false;
         let typingSpeed = 20;
+
+        // Initialize auto-play toggle state
+        document.getElementById('autoPlayToggle').checked = autoPlayEnabled;
 
         // Auto-resize textarea
         const textarea = document.getElementById('textInput');
@@ -713,16 +806,18 @@
             // Hide all modes
             document.getElementById('textMode').style.display = 'none';
             document.getElementById('voiceQueryMode').classList.remove('active');
-            document.getElementById('voiceFullMode').classList.remove('active');
             
             // Show selected mode
             if (mode === 'text') {
                 document.getElementById('textMode').style.display = 'flex';
             } else if (mode === 'voice-query') {
                 document.getElementById('voiceQueryMode').classList.add('active');
-            } else if (mode === 'voice-full') {
-                document.getElementById('voiceFullMode').classList.add('active');
             }
+        }
+
+        function toggleAutoPlay() {
+            autoPlayEnabled = document.getElementById('autoPlayToggle').checked;
+            localStorage.setItem('autoPlayEnabled', autoPlayEnabled);
         }
 
         function showToast(message, type = 'info') {
@@ -739,6 +834,7 @@
             
             isTyping = true;
             let currentText = element.getAttribute('data-raw-text') || '';
+            const messagesArea = document.getElementById('messagesArea');
             
             while (typingQueue.length > 0) {
                 const char = typingQueue[0];
@@ -746,6 +842,10 @@
                 currentText += char;
                 element.setAttribute('data-raw-text', currentText);
                 element.innerHTML = formatAnswer(currentText);
+                
+                // Auto-scroll to bottom as text is being typed
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+                
                 await new Promise(resolve => setTimeout(resolve, typingSpeed));
             }
             
@@ -929,8 +1029,19 @@
                     audioPlayer.src = audioUrl;
                     audioPlayer.className = 'audio-player';
                     
+                    // Auto-play if enabled
+                    if (autoPlayEnabled) {
+                        audioPlayer.autoplay = true;
+                    }
+                    
                     // Insert after the bubble
                     answerBubble.parentElement.appendChild(audioPlayer);
+
+                    if (autoPlayEnabled) {
+                        audioPlayer.play().catch(() => {
+                            // Autoplay might be blocked by the browser
+                        });
+                    }
                     
                     console.log('Audio player added successfully');
                 }
@@ -1152,15 +1263,6 @@
                     await new Promise(resolve => setTimeout(resolve, 50));
                 }
                 hideLoading();
-            }
-        }
-
-        // Voice Full functionality
-        async function toggleRecording() {
-            if (!isRecording) {
-                startRecording();
-            } else {
-                stopRecording();
             }
         }
 
