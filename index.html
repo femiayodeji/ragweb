@@ -262,7 +262,7 @@
             padding: 12px 18px;
             border-radius: 18px 18px 4px 18px;
             max-width: 70%;
-            font-size: 15px;
+            font-size: 14px;
             line-height: 1.5;
             box-shadow: 0 2px 4px rgba(0, 135, 81, 0.2);
         }
@@ -292,7 +292,7 @@
             padding: 16px 20px;
             border-radius: 4px 18px 18px 18px;
             max-width: 85%;
-            font-size: 15px;
+            font-size: 14px;
             line-height: 1.7;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
@@ -767,17 +767,17 @@
         let recordingSeconds = 0;
         let sessionId = sessionStorage.getItem('sessionId') || null;
         let currentMode = 'text';
-        let autoPlayEnabled = localStorage.getItem('autoPlayEnabled') !== 'false';
+        let autoPlayEnabled = localStorage.getItem('autoPlayEnabled') === 'true';
+        let isStreaming = false;
+        let currentAudioPlayer = null;
         
-        // Typing effect variables
         let typingQueue = '';
         let isTyping = false;
         let typingSpeed = 20;
 
-        // Initialize auto-play toggle state
         document.getElementById('autoPlayToggle').checked = autoPlayEnabled;
 
-        // Auto-resize textarea
+
         const textarea = document.getElementById('textInput');
         textarea.addEventListener('input', function() {
             this.style.height = 'auto';
@@ -799,15 +799,12 @@
         function switchMode(mode) {
             currentMode = mode;
             
-            // Update button states
             document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
             event.target.closest('.mode-btn').classList.add('active');
             
-            // Hide all modes
             document.getElementById('textMode').style.display = 'none';
             document.getElementById('voiceQueryMode').classList.remove('active');
             
-            // Show selected mode
             if (mode === 'text') {
                 document.getElementById('textMode').style.display = 'flex';
             } else if (mode === 'voice-query') {
@@ -843,7 +840,6 @@
                 element.setAttribute('data-raw-text', currentText);
                 element.innerHTML = formatAnswer(currentText);
                 
-                // Auto-scroll to bottom as text is being typed
                 messagesArea.scrollTop = messagesArea.scrollHeight;
                 
                 await new Promise(resolve => setTimeout(resolve, typingSpeed));
@@ -904,6 +900,11 @@
         }
 
         async function submitText() {
+            if (isStreaming) {
+                showToast('Please wait for the current response to complete', 'error');
+                return;
+            }
+
             const question = document.getElementById('textInput').value.trim();
             
             if (!question) {
@@ -921,6 +922,8 @@
         }
 
         async function processQuery(question, answerBubble) {
+            isStreaming = true;
+            updateSendButtonState();
             showLoading();
             clearTypingQueue();
 
@@ -1001,6 +1004,15 @@
                 if (answerBubble) {
                     answerBubble.classList.remove('streaming');
                 }
+                isStreaming = false;
+                updateSendButtonState();
+            }
+        }
+
+        function updateSendButtonState() {
+            const sendBtn = document.querySelector('.send-btn');
+            if (sendBtn) {
+                sendBtn.disabled = isStreaming;
             }
         }
 
@@ -1018,7 +1030,6 @@
                     const audioBlob = await response.blob();
                     const audioUrl = URL.createObjectURL(audioBlob);
                     
-                    // Check if audio player already exists in this message
                     const existingAudio = answerBubble.parentElement.querySelector('.audio-player');
                     if (existingAudio) {
                         existingAudio.remove();
@@ -1029,18 +1040,30 @@
                     audioPlayer.src = audioUrl;
                     audioPlayer.className = 'audio-player';
                     
-                    // Auto-play if enabled
+                    if (currentAudioPlayer && !currentAudioPlayer.paused) {
+                        currentAudioPlayer.pause();
+                        currentAudioPlayer.currentTime = 0;
+                    }
+                    
+                    currentAudioPlayer = audioPlayer;
+                    
+                    audioPlayer.addEventListener('play', function() {
+                        document.querySelectorAll('.audio-player').forEach(player => {
+                            if (player !== audioPlayer && !player.paused) {
+                                player.pause();
+                            }
+                        });
+                        currentAudioPlayer = audioPlayer;
+                    });
+                    
                     if (autoPlayEnabled) {
                         audioPlayer.autoplay = true;
                     }
                     
-                    // Insert after the bubble
                     answerBubble.parentElement.appendChild(audioPlayer);
 
                     if (autoPlayEnabled) {
-                        audioPlayer.play().catch(() => {
-                            // Autoplay might be blocked by the browser
-                        });
+                        audioPlayer.play().catch(() => {});
                     }
                     
                     console.log('Audio player added successfully');
@@ -1078,7 +1101,6 @@
             return formatted;
         }
 
-        // Voice Query functionality
         let isVoiceQueryRecording = false;
         let voiceQueryMediaRecorder = null;
         let voiceQueryAudioChunks = [];
@@ -1169,6 +1191,8 @@
         }
 
         async function sendVoiceQueryAudio(audioBlob) {
+            isStreaming = true;
+            updateSendButtonState();
             showLoading();
             clearTypingQueue();
 
@@ -1263,6 +1287,8 @@
                     await new Promise(resolve => setTimeout(resolve, 50));
                 }
                 hideLoading();
+                isStreaming = false;
+                updateSendButtonState();
             }
         }
 
