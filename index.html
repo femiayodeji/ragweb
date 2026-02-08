@@ -5,6 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ofing - Legal Guidance for Nigerian Citizens</title>
     <style>
+        #central-loader {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.95);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transition: opacity 0.3s;
+        }
+        #central-loader .spinner {
+            border: 6px solid #e5e7eb;
+            border-top: 6px solid #008751;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 18px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <style>
         * {
             margin: 0;
             padding: 0;
@@ -672,6 +698,12 @@
     </style>
 </head>
 <body>
+    <div id="central-loader">
+        <div class="spinner"></div>
+        <div style="color:#008751;font-weight:600;font-size:18px;">Waking up...</div>
+        <div id="loader-error" style="color:#ef4444;margin-top:10px;display:none;"></div>
+    </div>
+    <div id="main-content" style="display:none;">
     <div class="header">
         <div class="header-content">
             <div class="logo-section">
@@ -1428,5 +1460,34 @@
             document.getElementById('loading').classList.remove('active');
         }
     </script>
+</div>
+<script>
+    // Centralized loader and health check
+    async function checkHealthAndShowContent() {
+        const loader = document.getElementById('central-loader');
+        const mainContent = document.getElementById('main-content');
+        const errorDiv = document.getElementById('loader-error');
+        let healthUrl = '/health';
+        try {
+            // Try relative first, fallback to API_URL if defined
+            let url = healthUrl;
+            if (typeof API_URL !== 'undefined') {
+                url = API_URL + '/health';
+            }
+            const resp = await fetch(url, { cache: 'no-store' });
+            if (!resp.ok) throw new Error('Health check failed');
+            loader.style.opacity = 0;
+            setTimeout(() => {
+                loader.style.display = 'none';
+                mainContent.style.display = 'block';
+            }, 300);
+        } catch (e) {
+            errorDiv.textContent = 'Unable to connect to server. Retrying...';
+            errorDiv.style.display = 'block';
+            setTimeout(checkHealthAndShowContent, 2000);
+        }
+    }
+    window.addEventListener('DOMContentLoaded', checkHealthAndShowContent);
+</script>
 </body>
 </html>
